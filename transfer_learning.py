@@ -1,6 +1,5 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
-import tensorflow.keras as keras
 import os
 
 
@@ -163,7 +162,7 @@ class CNN:
             self.history = self.model.fit(train_batches,
                                           epochs = self.epochs,
                                           validation_data = validation_batches,
-                                          callbacks = [cp_callback],
+                                          callbacks = [cp_callback], #TODO : check why not working (but works now)
                                           steps_per_epoch = self.training_steps,
                                           validation_steps = self.validation_steps) # run validation on this number of batches
 

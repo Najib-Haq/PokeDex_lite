@@ -52,11 +52,12 @@ def augment_images(dir = dir, class_names = class_names, num_files_desired = 100
 
 
         num_generated_files = 0
-        while num_generated_files <= num_files_desired:
+        while num_generated_files < num_files_desired:
             print(num_generated_files)
             # random image from the folder
             image_path = random.choice(images)
             # read image as an two dimensional array of pixels
+            print(image_path)
             image_to_transform = np.array(Image.open(image_path))
 
 
@@ -65,7 +66,7 @@ def augment_images(dir = dir, class_names = class_names, num_files_desired = 100
 
             num_transformations = 0
             transformed_image = None
-            while num_transformations <= num_transformations_to_apply and num_generated_files <= num_files_desired:
+            while num_transformations <= num_transformations_to_apply and num_generated_files < num_files_desired:
                 # choose a random transformation to apply for a single image
                 key = random.choice(list(available_transformations))
                 transformed_image = available_transformations[key](image_to_transform)

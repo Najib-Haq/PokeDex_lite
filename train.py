@@ -1,5 +1,6 @@
 import transfer_learning as tl
 import dataset_prep as dp
+import image_augmentation as ia
 
 data_dir = 'E:\Projects\Side_projects\PokeDex_lite\Dataset'
 validation_dir = 'E:\Projects\Side_projects\PokeDex_lite\Validation'
@@ -22,32 +23,38 @@ validation_dir = 'E:\Projects\Side_projects\PokeDex_lite\Validation'
 ####################################################################
 
 
-# get data in Dataset folder
+#get data in Dataset folder
 data = dp.Data(
     data_dir,
-    batch_size=32,
+    batch_size=64,
     image_height=160,
     image_width=160
 )
 
-# augment data
-# ia.augment_images('Dataset', class_names=data.class_names, num_files_desired=100)
+#class_name = ['Chesnaught','Delphox','Greninja']
+
+#augment data
+# ia.augment_images('Dataset',
+#                   class_names= class_name, #data.class_names,
+#                   num_files_desired=118)
 
 data.image_generator_tf()
-
+print(data.image_count)
+data.plot_batch_data(5,5,25)
 # get data in Validation folder
 validation = dp.Data(
     validation_dir,
-    batch_size=5,
+    batch_size=10,
     image_width=160,
     image_height=160
 )
 
 # augment data
-# ia.augment_images('Validation', class_names=validation.class_names, num_files_desired=10)
+#ia.augment_images('Validation', class_names=class_name, num_files_desired=6)
 
 validation.image_generator_tf()
-
+validation.plot_batch_data(5,2,10)
+print(validation.image_count)
 # build model object
 model = tl.CNN(
     num_classes=len(data.class_names),
@@ -55,7 +62,7 @@ model = tl.CNN(
     learning_rate=0.0001,
     training_steps=(data.image_count/data.batch_size),
     validation_steps=(validation.image_count/validation.batch_size),
-    epochs=50
+    epochs=100
 )
 
 # train

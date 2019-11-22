@@ -52,7 +52,6 @@ class Data:
         :param no_of_images: how many images to plot
         :return:
         '''
-        print(len(image_batch))
         plt.figure(figsize=(10, 10))
         for n in range(no_of_images):
             ax = plt.subplot(n_row, n_col, n + 1)
@@ -90,13 +89,14 @@ class Data:
         return parts[-2] == self.class_names
 
 
-    def decode_img(self,img):
+    def decode_img(self,file_path):
         '''
-        :param img: image to be decoded
+        :param file_path:file path where image is
         :return: decoded image with specific shape
         '''
+        img = tf.io.read_file(file_path)
         # convert the compressed string to a 3D uint8 tensor
-        img = tf.image.decode_jpeg(img, channels=3)
+        img = tf.image.decode_jpeg(img, channels=3)#, expand_animations = False)
         # Use `convert_image_dtype` to convert to floats in the [0,1] range.
         img = tf.image.convert_image_dtype(img, tf.float32)
         # resize the image to the desired size.
@@ -110,8 +110,10 @@ class Data:
         '''
         label = self.get_label(file_path)
         # load the raw data from the file as a string
-        img = tf.io.read_file(file_path)
-        img = self.decode_img(img)
+        # and decode
+
+        img = self.decode_img(file_path)
+
         return img, label
 
 
@@ -131,7 +133,7 @@ class Data:
         # Repeat forever
         ds = ds.repeat()
 
-        ds = ds.batch(BATCH_SIZE)
+        ds = ds.batch(self.batch_size)
 
         # `prefetch` lets the dataset fetch batches in the background while the model
         # is training.
