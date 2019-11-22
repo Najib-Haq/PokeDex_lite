@@ -12,14 +12,6 @@ IMG_HEIGHT = 160
 IMG_WIDTH = 160
 dir = 'E:\Projects\Side_projects\PokeDex_lite\Dataset'
 
-def augmentation(x, y, HEIGHT=160, WIDTH=160, NUM_CHANNELS=3):
-    x = tf.image.resize_with_crop_or_pad(
-        x, HEIGHT + 8, WIDTH + 8)
-    x = tf.image.random_crop(x, [HEIGHT, WIDTH, NUM_CHANNELS])
-    x = tf.image.random_flip_left_right(x)
-    return x, y
-
-
 class Data:
     def __init__(self, dir=dir, batch_size = BATCH_SIZE, image_height = IMG_HEIGHT, image_width = IMG_WIDTH):
         self.data_dir = pathlib.Path(dir)
