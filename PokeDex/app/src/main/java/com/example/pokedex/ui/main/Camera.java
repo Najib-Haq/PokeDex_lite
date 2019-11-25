@@ -1,0 +1,215 @@
+package com.example.pokedex.ui.main;
+
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.pokedex.R;
+
+import java.io.File;
+import java.io.IOException;
+
+
+public class Camera extends Fragment {
+
+    static final int REQUEST_TAKE_PHOTO = 1;
+    private PageViewModel argument;
+
+    private View view;
+    private ImageView photo;
+    private TextView pokemon;
+    private TextView type1, type2;
+    private ImageButton capture;
+    Uri outPutfileUri;
+    Bitmap bitmap;
+    String currentPhotoPath;
+
+
+    public Camera() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @return A new instance of fragment Camera.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static Camera newInstance() {
+        Camera fragment = new Camera();
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        argument = ViewModelProviders.of(getActivity()).get(PageViewModel.class);
+        argument.setIndex(-1);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        setPic();
+        getPokemon();
+//        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+//        photo.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_camera, container, false);
+        photo = view.findViewById(R.id.camera);
+        pokemon = view.findViewById(R.id.name);
+        type1 = view.findViewById(R.id.type1);
+        type2 = view.findViewById(R.id.type2);
+        capture = view.findViewById(R.id.capture);
+
+        capture.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // Ensure that there's a camera activity to handle the intent
+                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                        ex.printStackTrace();
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                                "com.example.android.fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                    }
+                }
+
+            }
+        });
+
+        return view;
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String imageFileName = "POKEMON_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = photo.getWidth();
+        int targetH = photo.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+        try {
+            bitmap = modifyOrientation(bitmap, currentPhotoPath);
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+        photo.setImageBitmap(bitmap);
+    }
+
+
+    public static Bitmap modifyOrientation(Bitmap bitmap, String image_absolute_path) throws IOException {
+        ExifInterface ei = new ExifInterface(image_absolute_path);
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotate(bitmap, 90);
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotate(bitmap, 180);
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotate(bitmap, 270);
+
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                return flip(bitmap, true, false);
+
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                return flip(bitmap, false, true);
+
+            default:
+                return bitmap;
+        }
+    }
+
+    public static Bitmap rotate(Bitmap bitmap, float degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+
+    public void getPokemon()
+    {
+        // get pokemon name from image
+        pokemon.setText("Charizard");
+        type1.setText("Fire");
+        type2.setText("Dragon");
+        argument.setIndex(0);
+    }
+
+}
