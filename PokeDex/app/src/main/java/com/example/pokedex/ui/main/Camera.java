@@ -98,6 +98,8 @@ public class Camera extends Fragment {
         type2 = view.findViewById(R.id.type2);
         capture = view.findViewById(R.id.capture);
 
+
+
         capture.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
