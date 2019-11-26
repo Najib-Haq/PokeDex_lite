@@ -1,5 +1,7 @@
 package com.example.pokedex.ui.main;
 
+import android.graphics.Color;
+
 import java.util.HashMap;
 
 public class Info {
@@ -7,6 +9,7 @@ public class Info {
     public static HashMap<Integer, String> intToType1;
     public static HashMap<Integer, String> intToType2;
     public static HashMap<Integer, String > intToData;
+    public static HashMap<String, String > typeColor;
     Info()
     {
 
@@ -14,6 +17,7 @@ public class Info {
         intToType1 = new HashMap<>();
         intToType2 = new HashMap<>();
         intToData = new HashMap<>();
+        typeColor = new HashMap<>();
         String[] names = {"Blastoise","Blaziken","Charizard","Chesnaught","Delphox", "Greninja", "Pikachu", "Sceptile", "Swampert", "Venusaur"};
         String[] type1 = {"Water","Fire","Fire","Grass","Fire","Water","Electric","Grass","Water","Grass"};
         String[] type2 = {"Nan","Fighting","Flying","Fighting","Psychic","Dark","Nan","Nan","Ground","Poison"};
@@ -27,12 +31,21 @@ public class Info {
         "The leaves growing on Sceptile's body are very sharp edged. This Pokémon is very agile—it leaps all over the branches of trees and jumps on its foe from above or behind. ",
         "Swampert is very strong. It has enough power to easily drag a boulder weighing more than a ton. This Pokémon also has powerful vision that lets it see even in murky water. ",
         "There is a large flower on Venusaur's back. The flower is said to take on vivid colors if it gets plenty of nutrition and sunlight. The flower's aroma soothes the emotions of people. "};
+
+
+        String[] types = {"Water","Fire","Grass","Electric","Fighting","Flying","Psycic","Dark","Ground","Poison","Nan"};
+        String[] colors = {"#6890F0","#F08030","#78C850","#F8D030","#D67873","#6D5E9C","#A13959","#49392F","#E0C068","#A040A0","#ffffff"};
         for (int i=0; i<names.length; i++)
         {
             nameToInt.put(names[i], i);
             intToType1.put(i, type1[i]);
             intToType2.put(i, type2[i]);
             intToData.put(i, data[i]);
+        }
+
+        for (int i=0; i<types.length; i++)
+        {
+            typeColor.put(types[i],colors[i]);
         }
     }
 }

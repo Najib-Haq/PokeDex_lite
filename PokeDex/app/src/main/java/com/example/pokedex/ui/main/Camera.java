@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -212,7 +213,7 @@ public class Camera extends Fragment {
                 classifier.recognizeImage(bitmap, 0);
 
         String pokemon_name = results.get(0).getTitle() + " _ " + results.get(0).getConfidence();
-        pokemon.setText(pokemon_name);
+        //pokemon.setText(pokemon_name);
         getPokemon(results.get(0).getTitle());
     }
 
@@ -243,18 +244,18 @@ public class Camera extends Fragment {
     }
 
 
-    protected int getScreenOrientation() {
-        switch (getActivity().getWindowManager().getDefaultDisplay().getRotation()) {
-            case Surface.ROTATION_270:
-                return 270;
-            case Surface.ROTATION_180:
-                return 180;
-            case Surface.ROTATION_90:
-                return 90;
-            default:
-                return 0;
-        }
-    }
+//    protected int getScreenOrientation() {
+//        switch (getActivity().getWindowManager().getDefaultDisplay().getRotation()) {
+//            case Surface.ROTATION_270:
+//                return 270;
+//            case Surface.ROTATION_180:
+//                return 180;
+//            case Surface.ROTATION_90:
+//                return 90;
+//            default:
+//                return 0;
+//        }
+//    }
 
     public static Bitmap rotate(Bitmap bitmap, float degrees) {
         Matrix matrix = new Matrix();
@@ -272,10 +273,21 @@ public class Camera extends Fragment {
     public void getPokemon(String pokemon_name)
     {
         // get pokemon name from image
-        //pokemon.setText(pokemon_name);
+        pokemon.setText(pokemon_name);
         int index = info.nameToInt.get(pokemon_name);
         type1.setText(info.intToType1.get(index));
         type2.setText(info.intToType2.get(index));
+
+        try {
+            type1.setBackgroundColor(Color.parseColor(info.typeColor.get(info.intToType1.get(index))));
+            type2.setBackgroundColor(Color.parseColor(info.typeColor.get(info.intToType2.get(index))));
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            type1.setBackgroundColor(Color.parseColor("#ffffff"));
+            type2.setBackgroundColor(Color.parseColor("#ffffff"));
+        }
+
         argument.setIndex(index);
     }
 
@@ -296,7 +308,7 @@ public class Camera extends Fragment {
     private void collapse() {
         int finalHeight = llexpand.getHeight();
 
-        ValueAnimator mAnimator = slideAnimator(finalHeight, 0);
+        ValueAnimator mAnimator = slideAnimator(finalHeight, 0).setDuration(500);
         mAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animator) {

@@ -29,6 +29,7 @@ data = dp.Data(
     batch_size=64,
     image_height=160,
     image_width=160
+
 )
 
 #class_name = ['Chesnaught','Delphox','Greninja']
@@ -62,7 +63,7 @@ model = tl.CNN(
     learning_rate=0.0001,
     training_steps=(data.image_count/data.batch_size),
     validation_steps=(validation.image_count/validation.batch_size),
-    epochs=1
+    epochs=100
 )
 
 # train
