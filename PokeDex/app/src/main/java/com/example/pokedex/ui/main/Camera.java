@@ -1,8 +1,10 @@
 package com.example.pokedex.ui.main;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -16,6 +18,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -25,8 +28,16 @@ import android.widget.Toast;
 
 import com.example.pokedex.R;
 
+import org.tensorflow.lite.Interpreter;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Camera extends Fragment {
@@ -39,10 +50,9 @@ public class Camera extends Fragment {
     private TextView pokemon;
     private TextView type1, type2;
     private ImageButton capture;
-    Uri outPutfileUri;
-    Bitmap bitmap;
     String currentPhotoPath;
-
+    Info info;
+    private Classifier classifier;
 
     public Camera() {
         // Required empty public constructor
@@ -65,14 +75,14 @@ public class Camera extends Fragment {
         super.onCreate(savedInstanceState);
         argument = ViewModelProviders.of(getActivity()).get(PageViewModel.class);
         argument.setIndex(-1);
-
+        info = new Info();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         setPic();
-        getPokemon();
 //        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
 //        photo.setImageBitmap(bitmap);
     }
@@ -110,11 +120,18 @@ public class Camera extends Fragment {
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                         startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                     }
+
                 }
 
             }
         });
 
+        try {
+            classifier = Classifier.create(getActivity());
+        } catch (IOException e) {
+            System.out.println("Cannot create classifier");
+            e.printStackTrace();
+        }
         return view;
     }
 
@@ -161,7 +178,18 @@ public class Camera extends Fragment {
         }catch(IOException e) {
             e.printStackTrace();
         }
+
         photo.setImageBitmap(bitmap);
+
+//
+//        int sensor_orientation = 90 - getScreenOrientation();
+        System.out.println(bitmap);
+        List<Classifier.Recognition> results =
+                classifier.recognizeImage(bitmap, 0);
+
+        String pokemon_name = results.get(0).getTitle() + " _ " + results.get(0).getConfidence();
+        pokemon.setText(pokemon_name);
+        getPokemon(results.get(0).getTitle());
     }
 
 
@@ -190,6 +218,20 @@ public class Camera extends Fragment {
         }
     }
 
+
+    protected int getScreenOrientation() {
+        switch (getActivity().getWindowManager().getDefaultDisplay().getRotation()) {
+            case Surface.ROTATION_270:
+                return 270;
+            case Surface.ROTATION_180:
+                return 180;
+            case Surface.ROTATION_90:
+                return 90;
+            default:
+                return 0;
+        }
+    }
+
     public static Bitmap rotate(Bitmap bitmap, float degrees) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degrees);
@@ -203,13 +245,15 @@ public class Camera extends Fragment {
     }
 
 
-    public void getPokemon()
+    public void getPokemon(String pokemon_name)
     {
         // get pokemon name from image
-        pokemon.setText("Charizard");
-        type1.setText("Fire");
-        type2.setText("Dragon");
-        argument.setIndex(0);
+        //pokemon.setText(pokemon_name);
+        int index = info.nameToInt.get(pokemon_name);
+        type1.setText(info.intToType1.get(index));
+        type2.setText(info.intToType2.get(index));
+        argument.setIndex(index);
     }
+
 
 }

@@ -1,8 +1,11 @@
 package com.example.pokedex.ui.main;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.tensorflow.lite.Interpreter;
 import com.example.pokedex.R;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 
 
 public class Data extends Fragment {
@@ -25,6 +34,8 @@ public class Data extends Fragment {
     private String name_pok_private;
     private TextView tv;
     private PageViewModel argument;
+
+
 
     public Data() {
         // Required empty public constructor
@@ -53,8 +64,6 @@ public class Data extends Fragment {
         }
 
         argument = ViewModelProviders.of(getActivity()).get(PageViewModel.class);
-
-
     }
 
     @Override
@@ -63,14 +72,16 @@ public class Data extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_data, container, false);
         tv = view.findViewById(R.id.data);
+        final Info info = new Info();
         PageViewModel argument = ViewModelProviders.of(getActivity()).get(PageViewModel.class);
         argument.getIndex().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer s) {
                 value = s;
-                tv.setText(String.valueOf(s));
+                tv.setText(info.intToData.get(s));
             }
         });
+
 
 
         return view;

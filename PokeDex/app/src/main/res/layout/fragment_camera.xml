@@ -29,7 +29,9 @@
                 android:id="@+id/camera"
                 android:layout_width="300dp"
                 android:layout_height="350dp"
-                android:src="@android:color/holo_blue_bright" />
+                android:padding="20dp"
+                android:src="@android:color/black"
+                android:background="@color/colorgrey"/>
 
             <TextView
                 android:id="@+id/name"
@@ -40,8 +42,8 @@
                 android:padding="10dp"
                 android:text="name of pokemon"
                 android:textAlignment="center"
-                android:background="@drawable/back"
-                android:textColor="@color/colorwhite" />
+                android:background="@color/colorgreen"
+                android:textColor="@android:color/black" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,7 +78,7 @@
                 android:id="@+id/capture"
                 android:layout_width="match_parent"
                 android:layout_height="222dp"
-                android:backgroundTint="#C00000"
+                android:backgroundTint="@color/colordeepred"
                 android:src="@drawable/pokv" />
 
         </LinearLayout>

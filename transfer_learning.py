@@ -30,7 +30,7 @@ class CNN:
         '''
         self.image_size = image_size
         self.image_shape = (image_size, image_size, 3)
-        self.base_model = tf.keras.applications.MobileNetV2(
+        self.base_model = tf.keras.applications.MobileNet(
             input_shape = self.image_shape,
             include_top = False, # that means doesn't include the topmost(output) classification layer
             weights = 'imagenet' # weights trained under imagenet dataset
@@ -198,7 +198,50 @@ class CNN:
 
 
 
+    def save_model(self):
 
+        saved_model_dir = 'saved_model\\pokemon'
+        tf.saved_model.save(self.model, saved_model_dir)
+
+        converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_dir)
+        tflite_model = converter.convert()
+
+        with open('model.tflite', 'wb') as f:
+            f.write(tflite_model)
+
+
+        #tf.saved_model.save(self.model, "/tmp/mobilenet/1/")
+        # self.model.save('model.h5')
+
+        # converter = tf.lite.TFLiteConverter.from_keras_model(self.model)
+        # converter.target_spec.supported_ops = [tf.lite.OpsSet.SELECT_TF_OPS]
+        # tflite_model = converter.convert()
+        # open("converted_model.tflite", "wb").write(tflite_model)
+
+        # TFLITE_MODEL = "pokemon.tflite"
+        # TFLITE_QUANT_MODEL = "pokemon_quant.tflite"
+        #
+        # # Get the concrete function from the Keras model.
+        # run_model = tf.function(lambda x: self.model(x))
+        #
+        # # Save the concrete function.
+        # concrete_func = run_model.get_concrete_function(
+        #     tf.TensorSpec(self.model.inputs[0].shape, self.model.inputs[0].dtype)
+        # )
+        #
+        # # Convert the model
+        # converter = tf.lite.TFLiteConverter.from_concrete_functions([concrete_func])
+        # converted_tflite_model = converter.convert()
+        # open(TFLITE_MODEL, "wb").write(converted_tflite_model)
+        #
+        # # Convert the model to quantized version with post-training quantization
+        # converter = tf.lite.TFLiteConverter.from_concrete_functions([concrete_func])
+        # converter.optimizations = [tf.lite.Optimize.OPTIMIZE_FOR_SIZE]
+        # tflite_quant_model = converter.convert()
+        # open(TFLITE_QUANT_MODEL, "wb").write(tflite_quant_model)
+        # converter = tf.lite.TFLiteConverter.from_keras_model(self.model)
+        # tflite_model = converter.convert()
+        # open('model.tflite','wb').write(tflite_model)
 
 if __name__ == '__main__':
     cnn = CNN([1,2,3],2)

@@ -1,5 +1,6 @@
 package com.example.pokedex;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+
+
+        tabs.setSelectedTabIndicatorColor(Color.parseColor("#C00000"));
+        tabs.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        tabs.setSelectedTabIndicatorHeight((int) (5 * getResources().getDisplayMetrics().density));
+        tabs.setTabTextColors(Color.parseColor("#727272"), getResources().getColor(R.color.colorcyan));
         //FloatingActionButton fab = findViewById(R.id.fab);
 
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -38,4 +45,5 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
     }
+
 }

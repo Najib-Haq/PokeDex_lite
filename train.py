@@ -62,11 +62,14 @@ model = tl.CNN(
     learning_rate=0.0001,
     training_steps=(data.image_count/data.batch_size),
     validation_steps=(validation.image_count/validation.batch_size),
-    epochs=100
+    epochs=1
 )
 
 # train
+
 model.train(data.data_gen, validation.data_gen)#, fine_tune_epochs=10)
+model.model.summary()
+model.save_model()
 
 print("Training ended.")
 
