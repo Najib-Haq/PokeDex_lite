@@ -1,5 +1,7 @@
 package com.example.pokedex.ui.main;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +56,9 @@ public class Camera extends Fragment {
     String currentPhotoPath;
     Info info;
     private Classifier classifier;
+    LinearLayout llmain;
+    LinearLayout llexpand;
+    TextView standby;
 
     public Camera() {
         // Required empty public constructor
@@ -97,7 +103,23 @@ public class Camera extends Fragment {
         type1 = view.findViewById(R.id.type1);
         type2 = view.findViewById(R.id.type2);
         capture = view.findViewById(R.id.capture);
+        llmain = view.findViewById(R.id.main);
+        llexpand = view.findViewById(R.id.expand);
+        llexpand.setVisibility(View.GONE);
+        standby = view.findViewById(R.id.standby);
 
+        llmain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (llexpand.getVisibility()==View.GONE){
+                    expand();
+                    standby.setVisibility(View.GONE);
+                }else{
+                    collapse();
+                    standby.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
 
         capture.setOnClickListener(new View.OnClickListener(){
@@ -257,5 +279,62 @@ public class Camera extends Fragment {
         argument.setIndex(index);
     }
 
+
+
+    private void expand() {
+        //set Visible
+        llexpand.setVisibility(View.VISIBLE);
+
+        final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        llexpand.measure(widthSpec, heightSpec);
+
+        ValueAnimator mAnimator = slideAnimator(0, llexpand.getMeasuredHeight()).setDuration(500);
+        mAnimator.start();
+    }
+
+    private void collapse() {
+        int finalHeight = llexpand.getHeight();
+
+        ValueAnimator mAnimator = slideAnimator(finalHeight, 0);
+        mAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                //Height=0, but it set visibility to GONE
+                llexpand.setVisibility(View.GONE);
+            }
+
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+            }
+        });
+        mAnimator.start();
+    }
+
+    private ValueAnimator slideAnimator(int start, int end) {
+
+        ValueAnimator animator = ValueAnimator.ofInt(start, end);
+
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //Update Height
+                int value = (Integer) valueAnimator.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = llexpand.getLayoutParams();
+                layoutParams.height = value;
+                llexpand.setLayoutParams(layoutParams);
+            }
+        });
+        return animator;
+    }
 
 }

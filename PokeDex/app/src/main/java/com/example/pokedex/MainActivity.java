@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.setSelectedTabIndicatorColor(Color.parseColor("#C00000"));
         tabs.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         tabs.setSelectedTabIndicatorHeight((int) (5 * getResources().getDisplayMetrics().density));
-        tabs.setTabTextColors(Color.parseColor("#727272"), getResources().getColor(R.color.colorcyan));
+        tabs.setTabTextColors(Color.parseColor("#727272"), Color.parseColor("#000000"));
         //FloatingActionButton fab = findViewById(R.id.fab);
 
 //        fab.setOnClickListener(new View.OnClickListener() {
