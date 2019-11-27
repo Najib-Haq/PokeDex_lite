@@ -279,6 +279,8 @@ public class Camera extends Fragment {
         type2.setText(info.intToType2.get(index));
 
         try {
+//            System.out.println(info.typeColor.get(info.intToType1.get(index)));
+//            System.out.println(info.typeColor.get(info.intToType2.get(index)));
             type1.setBackgroundColor(Color.parseColor(info.typeColor.get(info.intToType1.get(index))));
             type2.setBackgroundColor(Color.parseColor(info.typeColor.get(info.intToType2.get(index))));
         }catch(Exception e)

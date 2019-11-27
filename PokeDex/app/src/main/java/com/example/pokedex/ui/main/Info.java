@@ -33,7 +33,7 @@ public class Info {
         "There is a large flower on Venusaur's back. The flower is said to take on vivid colors if it gets plenty of nutrition and sunlight. The flower's aroma soothes the emotions of people. "};
 
 
-        String[] types = {"Water","Fire","Grass","Electric","Fighting","Flying","Psycic","Dark","Ground","Poison","Nan"};
+        String[] types = {"Water","Fire","Grass","Electric","Fighting","Flying","Psychic","Dark","Ground","Poison","Nan"};
         String[] colors = {"#6890F0","#F08030","#78C850","#F8D030","#D67873","#6D5E9C","#A13959","#49392F","#E0C068","#A040A0","#ffffff"};
         for (int i=0; i<names.length; i++)
         {
