@@ -19,4 +19,5 @@ The procedure is depicted below as a GIF file. <br><br>
 Update more training images for each class for better classification and to extend classes to cover more Pokemon.
 <br><br><br>
 # Installation
-The apk file is available ![here](https://github.com/Najib-Haq/PokeDex_lite/releases).
+The apk file is available ![here](https://github.com/Najib-Haq/PokeDex_lite/releases).<br>
+If you have trouble installing third party applications see ![here](https://www.wikihow.tech/Install-APK-Files-on-Android).
