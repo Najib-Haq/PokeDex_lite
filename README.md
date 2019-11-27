@@ -3,7 +3,7 @@ A humble attempt to create a real life PokeDex using deep learning for image rec
 <br><br>
 # Project Insight
 ### Data preparation
-Due to the cumbersome nature of the task, only 10 classes were created. Meaning, this app can recognise only 10 different pokemon. These are : <b>Blastoise, Blaziken, Charizard, Chesnaught, Delphox, Greninja, Pikachu, Sceptile, Swampert and Venusaur</b>. 10 images were collected of each class and image augmentation was used to make it 128 images per class. Though the dataset is really small, the belief was that image augmentation and transfer learning will make accurate predictions nevetheless. Due to image augmentation, the only disadvantage is a specific class might be more prejudiced towards some particular data. But the collection of more data can overcome this.
+Due to the cumbersome nature of the task, only 10 classes were created. Meaning, this app can recognise only 10 different pokemon. These are : <b>Blastoise, Blaziken, Charizard, Chesnaught, Delphox, Greninja, Pikachu, Sceptile, Swampert and Venusaur</b>. 10 images were collected of each class and image augmentation was used to make it 128 images per class. Though the dataset is really small, the belief was that image augmentation and transfer learning will make accurate predictions nevertheless. Due to image augmentation, the only disadvantage is a specific class might be more prejudiced towards some particular data. But the collection of more data can overcome this.
 <br>
 ### Deep Learning
 Transfer learning on the MobileNetV2 model was done using Tensorflow for this dataset. The model was saved in h5 format and then converted to tflite format for use in an android application. The models can be found in the ![saved_model](saved_model) directory.
@@ -19,5 +19,4 @@ The procedure is depicted below as a GIF file. <br><br>
 Update more training images for each class for better classification and to extend classes to cover more Pokemon.
 <br><br><br>
 # Installation
-The apk file is available ![here](https://github.com/Najib-Haq/PokeDex_lite/releases).<br>
-If you have trouble installing third party applications see ![here](https://www.wikihow.tech/Install-APK-Files-on-Android).
+The apk file is available ![here](https://github.com/Najib-Haq/PokeDex_lite/releases).
